@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiscoipsum
+  labels:
+    app: wiscoipsum
+spec:
+  selector:
+    matchLabels:
+      app: wiscoipsum
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wiscoipsum
+    spec:
+      containers:
+      - name: wiscoipsum
+        image: wiscoipsumacr43242.azurecr.io/wiscoipsum:v1.0.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiscoipsum
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: wiscoipsum
