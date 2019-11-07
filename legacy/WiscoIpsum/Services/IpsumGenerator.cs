@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
 using System.Text;
 
 namespace WiscoIpsum.Services
@@ -9,6 +12,14 @@ namespace WiscoIpsum.Services
 
     public class IpsumGenerator : IIpsumGenerator
     {
+        private string[] _phrases;
+
+        public IpsumGenerator(IConfiguration config, IWebHostEnvironment hostingEnvironment) {
+            var fileName = config["PhrasesFile"];
+            var path = Path.Join(hostingEnvironment.ContentRootPath, fileName);
+            _phrases = File.ReadAllLines(path);
+        }
+
         public string GenerateIpsum(int numberOfParagraphs) {
             if (numberOfParagraphs < 1) { numberOfParagraphs = 1; }
 
@@ -27,37 +38,17 @@ namespace WiscoIpsum.Services
         private string GenerateParagraph()
         {
             var random = new Random();
-            var phases = GetPhrases();
             var numberOfphrases = random.Next(10, 30);
 
             var sb = new StringBuilder();
 
             for (int i = 0; i < numberOfphrases; i++) {
-                var index = random.Next(0, phases.Length - 1);
-                sb.Append(phases[index]);
+                var index = random.Next(0, _phrases.Length - 1);
+                sb.Append(_phrases[index]);
                 sb.Append(" ");
             }
 
             return sb.ToString();
         }
-
-        private string[] GetPhrases() => new string[] {
-            "Ope",
-            "Where-Abouts",
-            "Spotted Cow",
-            "Brandy Old Fashioned",
-            "Stop-and-go-lights",
-            "Fleet Farm",
-            "Cheesehead",
-            "Fish Fry",
-            "Bubbler",
-            "Aw Geez",
-            "For Cripes Sakes",
-            "Up Nort",
-            "Uff-Da",
-            "Ya Know?",
-            "Believe You Me",
-            "You betcha"
-        };
     }
 }

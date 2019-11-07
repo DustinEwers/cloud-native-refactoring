@@ -6,6 +6,9 @@
 
 
   <ItemGroup>
+    <None Update="Phrases.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
