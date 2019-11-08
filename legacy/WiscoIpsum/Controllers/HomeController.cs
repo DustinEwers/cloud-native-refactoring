@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using WiscoIpsum.Models;
 using WiscoIpsum.Services;
 
@@ -8,10 +9,13 @@ namespace WiscoIpsum.Controllers
     public class HomeController : Controller
     {
         private readonly IIpsumGenerator _generator;
+        private readonly IMemoryCache _memoryCache;
+        private const string IpsumTextCacheKey = "IpsumText";
 
-        public HomeController(IIpsumGenerator generator)
+        public HomeController(IIpsumGenerator generator, IMemoryCache memoryCache)
         {
             _generator = generator;
+            _memoryCache = memoryCache;
         }
 
         public IActionResult Index()
@@ -22,7 +26,15 @@ namespace WiscoIpsum.Controllers
         [HttpPost]
         public IActionResult Index(IpsumViewModel model)
         {
-            model.IpsumText = _generator.GenerateIpsum(model.Paragraphs);
+            var key = IpsumTextCacheKey + model.Paragraphs;
+            if (_memoryCache.TryGetValue(key, out string text)){
+                model.IpsumText = text;
+            }
+            else
+            {
+                model.IpsumText = _generator.GenerateIpsum(model.Paragraphs);
+                _memoryCache.Set(key, model.IpsumText);
+            }
             return View(model);
         }
 
