@@ -1,6 +1,6 @@
 
 $kubernetesResourceGroup="wisco-ipsum" # needs to be unique to your subscription
-$acrName='wiscoipsumacr43242' #must conform to the following pattern: '^[a-zA-Z0-9]*$
+$acrName='wiscoipsumacr' #must conform to the following pattern: '^[a-zA-Z0-9]*$
 $aksClusterName='wisco-ipsum-cluster'
 $location = 'eastus 2'
 $numberOfNodes = 1 # In production, you're going to want to use at least three nodes.
@@ -17,7 +17,7 @@ $appId = $sp.appId
 $appPassword = $sp.password
 
 Write-Host "Taking a little nap to let the Service Principal propagate"
-Start-Sleep -Seconds 30
+Start-Sleep -Seconds 120
 
 Write-Host "Giving the Service Principal the ability to pull images from the registry"
 $acrID=az acr show --resource-group $kubernetesResourceGroup --name $acrName --query "id" --output tsv

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wiscoipsum-configmap
+  labels:
+    app: wiscoipsum
+data:
+  # "__" translates to ":" in the .NET Core Config Provider
+  Logging__LogLevel__Default: "Information"
+  AllowedHosts: "*"

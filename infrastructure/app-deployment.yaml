@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: wiscoipsum
-        image: wiscoipsumacr43242.azurecr.io/wiscoipsum:v1.0.0
+        image: wiscoipsumacr2132312.azurecr.io/wiscoipsum:v1.0.0
         resources:
           requests:
             cpu: 100m
@@ -26,6 +26,11 @@ spec:
             memory: 200Mi
         ports:
         - containerPort: 80
+        envFrom:
+          - configMapRef:
+              name: wiscoipsum-configmap
+          - secretRef:
+              name: db-secret
 ---
 apiVersion: v1
 kind: Service
